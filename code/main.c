@@ -6,8 +6,6 @@
 
 #define MAX_ROUNDS 10
 
-// MPI_Bcast(&x,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
-
 // Función que simula la decisión de un general (leal o traidor)
 bool tomar_decision() {
     return rand() % 2; // 0 para retirarse, 1 para atacar
@@ -32,12 +30,12 @@ int main(int argc, char** argv) {
     if (rank == 0){
         // main process
         int rondas = 0;
-        bool decision_generales[size]; // Inicialmente, todos los generales deciden retirarse
+        bool decision_generales[size];
         bool consenso = false;
         bool continuar = true;
         bool decision_actual = decision_generales[0]; // Inicializamos con la decisión del comandante
 
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++){  // Inicialmente, todos los generales deciden retirarse
             decision_generales[i] = false;
         }
 
@@ -66,7 +64,6 @@ int main(int argc, char** argv) {
                 break;
             }
             
-            
         }
         if (consenso) {
             printf("Los generales han llegado a un consenso en la ronda %d. La decisión es: %s\n", rondas, decision_actual ? "Atacar" : "Retirarse");
@@ -79,10 +76,10 @@ int main(int argc, char** argv) {
         srand(time(NULL) + rank);
         int rondas = 0;
         bool continuar = true;
+        bool decision_actual;
 
         do {
             rondas++;
-            bool decision_actual;
             decision_actual = comunicar_decision(decision_actual);
         
             // send decision to node 0
